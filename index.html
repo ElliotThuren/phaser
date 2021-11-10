@@ -74,12 +74,14 @@ function create ()
     platforms.create(1230, 320, 'ground');
     platforms.create(350, 300, 'ground').setScale(0.5).refreshBody();
     platforms.create(1235, 165, 'ground').setScale(0.5).refreshBody();
+    platforms.create(1050, 465, 'ground').setScale(0.1).refreshBody();
+    platforms.create(1180, 400, 'ground').setScale(0.5).refreshBody();
 
     // The player and its settings
     player = this.physics.add.sprite(100, 450, 'dude');
 
     //  Player physics properties. Give the little guy a slight bounce.
-    player.setBounce(0.2);
+    player.setBounce(0.3);
     player.setCollideWorldBounds(true);
 
     //  Our player animations, turning, walking left and walking right.
@@ -115,7 +117,7 @@ function create ()
 
     stars2 = this.physics.add.group({
         key: 'star',
-        repeat: 1,
+        repeat: 2,
         setXY: { x: 294, y: 320, stepX: 69 }
     });
 
@@ -129,6 +131,12 @@ function create ()
         key: 'star',
         repeat: 1,
         setXY: { x: 1191, y: 190, stepX: 69 }
+    });
+
+    stars5 = this.physics.add.group({
+        key: 'star',
+        repeat: 3,
+        setXY: { x: 1053, y: 335, stepX: 69 }
     });
 
     stars1.children.iterate(function (child) {
@@ -159,6 +167,13 @@ function create ()
 
     });
 
+    stars5.children.iterate(function (child) {
+
+        //  Give each star a slightly different bounce
+        child.setBounceY(Phaser.Math.FloatBetween(0.7, 0.9));
+
+    });
+
     bombs = this.physics.add.group();
 
     //  The score
@@ -170,6 +185,7 @@ function create ()
     this.physics.add.collider(stars2, platforms);
     this.physics.add.collider(stars3, platforms);
     this.physics.add.collider(stars4, platforms);
+    this.physics.add.collider(stars5, platforms);
     this.physics.add.collider(bombs, platforms);
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
@@ -177,6 +193,7 @@ function create ()
     this.physics.add.overlap(player, stars2, collectStar, null, this);
     this.physics.add.overlap(player, stars3, collectStar, null, this);
     this.physics.add.overlap(player, stars4, collectStar, null, this);
+    this.physics.add.overlap(player, stars5, collectStar, null, this);
 
     this.physics.add.collider(player, bombs, hitBomb, null, this);
 }
@@ -225,6 +242,7 @@ function collectStar (player, star)
     if (stars2.countActive(true) === 0)
     if (stars3.countActive(true) === 0)
     if (stars4.countActive(true) === 0)
+    if (stars5.countActive(true) === 0)
     {
         //  A new batch of stars to collect
         stars1.children.iterate(function (child) {
@@ -245,6 +263,11 @@ function collectStar (player, star)
         stars4.children.iterate(function (child) {
 
             child.enableBody(true, child.x, 190, true, true);
+
+        });
+        stars5.children.iterate(function (child) {
+
+            child.enableBody(true, child.x, 335, true, true);
 
         });
 
